@@ -27,6 +27,6 @@ app.get("/", (req, res) => {
   res.send("Its an amazing life. Enojoy it.");
 });
 
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log("Server running on port : " + port);
 });
