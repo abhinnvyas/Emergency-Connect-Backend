@@ -22,5 +22,30 @@ model User {
   blood_grp String?
   gender String
   password String
+  alerts Alert[]
 }
 
+model Alert {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  type AlertType @default(General) // types of emergency
+  location String
+  status AlertStatus @default(Active) // Active, Resolved, Cancelled
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum AlertStatus {
+  Active
+  Resolved
+  Cancelled
+}
+
+enum AlertType {
+  General
+  Medical
+  Fire
+  Police
+  Ambulance
+}
