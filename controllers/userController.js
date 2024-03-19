@@ -29,7 +29,6 @@ exports.updateUser = async (req, res, next) => {
   try {
     // const { id } = req.params;
     const id = req.userId;
-    console.log(id);
     const { name, email, phone, age, blood_grp, gender } = req.body;
     if (!id || !name || !email || !phone || !age || !blood_grp || !gender) {
       return res
