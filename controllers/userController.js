@@ -1,8 +1,9 @@
 const prisma = require("../prisma/index");
 
-exports.getUserById = async (req, res, next) => {
+exports.getUserDetails = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    // const { id } = req.params;
+    const id = req.userId;
     if (!id) {
       return res
         .status(400)
@@ -26,7 +27,9 @@ exports.getUserById = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    // const { id } = req.params;
+    const id = req.userId;
+    console.log(id);
     const { name, email, phone, age, blood_grp, gender } = req.body;
     if (!id || !name || !email || !phone || !age || !blood_grp || !gender) {
       return res
@@ -36,6 +39,7 @@ exports.updateUser = async (req, res, next) => {
 
     const user = await prisma.user.findUnique({
       where: {
+        id,
         email,
       },
     });
