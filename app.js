@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
 const alertRouter = require("./routes/alertRouter");
+const dbRouter = require("./routes/dbRouter");
 const verifyToken = require("./middlewares/authMiddleware");
 
 // Non-Protected Routes
@@ -28,6 +29,7 @@ app.use(`${pathSuffix}/auth`, authRouter);
 //Protected Routes
 app.use(`${pathSuffix}/user`, verifyToken, userRouter);
 app.use(`${pathSuffix}/alert`, verifyToken, alertRouter);
+app.use(`${pathSuffix}/db`, verifyToken, dbRouter);
 
 app.get("/", (req, res) => {
   res.send("Its an amazing life. Enojoy it.");
