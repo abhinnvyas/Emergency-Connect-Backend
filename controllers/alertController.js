@@ -8,7 +8,7 @@ exports.createAlerts = async (req, res, next) => {
 
     //status = Active, Resolved, Cancelled
 
-    if (!location || !id) {
+    if (!type || !location || !id) {
       return res
         .status(400)
         .json({ status: false, msg: "All fields are required" });
@@ -31,23 +31,27 @@ exports.createAlerts = async (req, res, next) => {
     }
 
     try {
-      const ActiveAlerts = await prisma.alert.findMany({
+      const existingActiveAlert = await prisma.alert.findMany({
         where: {
+          userId: id,
           status: "Active",
         },
       });
 
-      if (ActiveAlerts.length === 1) {
-        ActiveAlerts.map((alert) => {
-          const updatedAlert = prisma.alert.update({
-            where: {
-              id: alert.id,
-            },
-            data: {
-              status: "Cancelled",
-            },
-          });
-        });
+      if (existingActiveAlert.length > 0) {
+        // Loop through each active alert and update its status to "Cancelled"
+        await Promise.all(
+          existingActiveAlert.map(async (alert) => {
+            await prisma.alert.update({
+              where: {
+                id: alert.id,
+              },
+              data: {
+                status: "Cancelled",
+              },
+            });
+          })
+        );
       }
     } catch (err) {
       res.status(400).json({
