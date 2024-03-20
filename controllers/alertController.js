@@ -64,7 +64,7 @@ exports.createAlerts = async (req, res, next) => {
       data: {
         type: AlertType[type],
         location,
-        status,
+        status: AlertStatus[status],
         user: { connect: { id } }, // Connect the Alert to the User
       },
     });
@@ -83,6 +83,119 @@ exports.createAlerts = async (req, res, next) => {
   }
 };
 
+exports.getUserAlerts = async (req, res, next) => {
+  try {
+    const id = req.userId;
+    const alerts = await prisma.alert.findMany({
+      where: {
+        userId: id,
+      },
+    });
+
+    if (alerts.length === 0)
+      return res.status(200).json({ status: true, msg: "No Alerts Found" });
+
+    return res.status(200).json({ status: true, data: alerts });
+  } catch (err) {
+    return res.status(400).json({ status: false, msg: err.message });
+  }
+};
+
+exports.updateAlertStatus = async (req, res, next) => {
+  try {
+    const { alertId, status } = req.body;
+    const id = req.userId;
+
+    if (!status || !id || !alertId) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "All Fields are required." });
+    }
+
+    if (!Object.values(AlertStatus).includes(status)) {
+      return res.status(400).json({
+        status: false,
+        msg: "Use one of the 'status' filters - [Active, Resolved, Cancelled]",
+      });
+    }
+
+    const alert = await prisma.alert.update({
+      where: {
+        id: alertId,
+        userId: id,
+      },
+      data: {
+        status: AlertStatus[status],
+      },
+    });
+
+    if (!alert) {
+      return res.status(400).json({ status: false, msg: "Alert not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ status: true, msg: "Alert Status Updated Successfully" });
+  } catch (err) {
+    res.status(400).json({ status: false, msg: err.message });
+  }
+};
+
+// I am yet to implemnet the 2Kms radius search
+exports.getAllActiveAlertsAroundLocation = async (req, res, next) => {
+  try {
+    const { location } = req.body;
+
+    if (!location) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "Location is required" });
+    }
+
+    const alerts = await prisma.alert.findMany({
+      where: {
+        status: "Active",
+      },
+    });
+
+    if (alerts.length === 0)
+      return res.status(200).json({ status: true, msg: "No Alerts Found" });
+
+    return res.status(200).json({ status: true, data: alerts });
+  } catch (err) {
+    return res.status(400).json({ status: false, msg: err.message });
+  }
+};
+
+exports.getAlertById = async (req, res, next) => {
+  try {
+    const { alertId } = req.params;
+    const id = req.userId;
+
+    if (!alertId || !id) {
+      return res
+        .status(400)
+        .json({ status: false, msg: "Alert id is required" });
+    }
+
+    const alert = await prisma.alert.findUnique({
+      where: {
+        id: alertId,
+      },
+    });
+
+    if (!alert) {
+      return res.response(404).json({ status: false, msg: "Alert not found" });
+    }
+
+    return res.status(200).json({ status: true, data: alert });
+  } catch (err) {
+    return res.status(400).json({ status: false, msg: err.message });
+  }
+};
+
+//probably for testing purposes
+
 exports.getAllAlerts = async (req, res, next) => {
   try {
     const alerts = await prisma.alert.findMany();
@@ -92,7 +205,3 @@ exports.getAllAlerts = async (req, res, next) => {
     return res.status(400).json({ status: false, msg: err.message });
   }
 };
-
-exports.getAlertsById = async (req, res, next) => {};
-
-exports.updateAlerts = async (req, res, next) => {};
