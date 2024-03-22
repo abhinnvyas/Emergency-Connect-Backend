@@ -20,6 +20,7 @@ exports.deleteDB = async (req, res, next) => {
 
     res.status(200).json({ status: true, msg: "Database has been cleared." });
   } catch (err) {
+    console.log("Error at dbController/deleteDB: ", err.message);
     return res.status(400).json({ status: false, msg: err.message });
   }
 };

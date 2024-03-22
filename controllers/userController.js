@@ -21,7 +21,8 @@ exports.getUserDetails = async (req, res, next) => {
     user.password = undefined;
     return res.status(200).json({ status: true, data: user });
   } catch (err) {
-    res.status(400).json({ status: false, msg: err.message });
+    console.log("Error at userController/getUserDetails: ", err.message);
+    return res.status(400).json({ status: false, msg: err.message });
   }
 };
 
@@ -68,8 +69,9 @@ exports.updateUser = async (req, res, next) => {
       msg: "User Updated Successfully",
       data: updatedUser,
     });
-  } catch (error) {
-    res.status(400).json({ status: false, msg: error.message });
+  } catch (err) {
+    console.log("Er at userController/updateUser: ", err.message);
+    return res.status(400).json({ status: false, msg: err.message });
   }
 };
 
@@ -85,6 +87,7 @@ exports.getAllUsers = async (req, res, next) => {
     });
     return res.status(200).json({ status: true, data: users });
   } catch (err) {
+    console.log("Error at userController/getAllUsers: ", err.message);
     return res.status(400).json({ status: false, msg: err.message });
   }
 };

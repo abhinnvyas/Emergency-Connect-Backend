@@ -82,7 +82,8 @@ exports.createAlerts = async (req, res, next) => {
       .status(201)
       .json({ status: true, msg: "Alert Created Successfully" });
   } catch (err) {
-    res.status(400).json({ status: false, msg: err.message });
+    console.log("Error at alertController/createAlerts: ", err.message);
+    return res.status(400).json({ status: false, msg: err.message });
   }
 };
 
@@ -100,6 +101,7 @@ exports.getUserAlerts = async (req, res, next) => {
 
     return res.status(200).json({ status: true, data: alerts });
   } catch (err) {
+    console.log("Error at alertController/getUserAlerts: ", err.message);
     return res.status(400).json({ status: false, msg: err.message });
   }
 };
@@ -140,35 +142,10 @@ exports.updateAlertStatus = async (req, res, next) => {
       .status(200)
       .json({ status: true, msg: "Alert Status Updated Successfully" });
   } catch (err) {
-    res.status(400).json({ status: false, msg: err.message });
+    console.log("Error at alertController/updateAlertStatus: ", err.message);
+    return res.status(400).json({ status: false, msg: err.message });
   }
 };
-
-// // I am yet to implemnet the 2Kms radius search
-// exports.getAllActiveAlertsAroundLocation = async (req, res, next) => {
-//   try {
-//     const { location } = req.body;
-
-//     if (!location) {
-//       return res
-//         .status(400)
-//         .json({ status: false, msg: "Location is required" });
-//     }
-
-//     const alerts = await prisma.alert.findMany({
-//       where: {
-//         status: "Active",
-//       },
-//     });
-
-//     if (alerts.length === 0)
-//       return res.status(200).json({ status: true, msg: "No Alerts Found" });
-
-//     return res.status(200).json({ status: true, data: alerts });
-//   } catch (err) {
-//     return res.status(400).json({ status: false, msg: err.message });
-//   }
-// };
 
 exports.getAlertById = async (req, res, next) => {
   try {
@@ -193,6 +170,7 @@ exports.getAlertById = async (req, res, next) => {
 
     return res.status(200).json({ status: true, data: alert });
   } catch (err) {
+    console.log("Error at alertController/getAlertById: ", err.message);
     return res.status(400).json({ status: false, msg: err.message });
   }
 };
@@ -205,6 +183,7 @@ exports.getAllAlerts = async (req, res, next) => {
     // alerts.map((alert) => {});
     return res.status(200).json({ status: true, data: alerts });
   } catch (err) {
+    console.log("Error at alertController/getAllAlerts: ", err.message);
     return res.status(400).json({ status: false, msg: err.message });
   }
 };
@@ -241,7 +220,11 @@ exports.getAllActiveAlertsInMyLocation = async (req, res, next) => {
     return res
       .status(200)
       .json({ status: true, data: allActiveAlertsInMyLocation });
-  } catch (error) {
-    return res.status(400).json({ status: false, msg: error.message });
+  } catch (err) {
+    console.log(
+      "Error at alertController/getAllActiveAlertsInMyLocation: ",
+      err.message
+    );
+    return res.status(400).json({ status: false, msg: err.message });
   }
 };

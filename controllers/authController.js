@@ -55,7 +55,8 @@ exports.signup = async (req, res, next) => {
       .status(201)
       .json({ status: true, msg: "User Created Successfully" });
   } catch (err) {
-    res.status(400).json({ status: false, msg: err.message });
+    console.log("Error at authController/signup: ", err.message);
+    return res.status(400).json({ status: false, msg: err.message });
   }
 };
 
@@ -93,6 +94,7 @@ exports.login = async (req, res, next) => {
       .status(200)
       .json({ status: true, msg: "User Login Successfull", token });
   } catch (error) {
-    res.status(400).json({ status: false, msg: error.message });
+    console.log("Error at authController/login: ", error.message);
+    return res.status(400).json({ status: false, msg: error.message });
   }
 };
