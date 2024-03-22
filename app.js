@@ -4,15 +4,23 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const pathSuffix = "/api/v-1";
 
-// const cors = require("cors");
+const cors = require("cors");
 
 require("dotenv").config();
 
 const limiter = rateLimit({
   windowMS: 60 * 1000, //1 minute
   limit: 50, // limit each IP to 5 requests per windowMS
+  message: "Too many requests from this IP, please try again after a minute",
+  legacyHeaders: false,
 });
 
+const corsOptions = {
+  origin: "*", //(https://your-client-app.com)
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
