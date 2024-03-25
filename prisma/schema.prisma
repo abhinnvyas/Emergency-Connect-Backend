@@ -23,6 +23,7 @@ model User {
   gender String
   password String
   alerts Alert[]
+  contacts Contact[]
 }
 
 model Alert {
@@ -36,6 +37,14 @@ model Alert {
   updatedAt DateTime @updatedAt
   latitude Float
   longitude Float
+}
+
+model Contact {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  phone String @unique
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
 }
 
 enum AlertStatus {

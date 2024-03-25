@@ -29,6 +29,7 @@ const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
 const alertRouter = require("./routes/alertRouter");
 const dbRouter = require("./routes/dbRouter");
+const contactRouter = require("./routes/contactRouter");
 const verifyToken = require("./middlewares/authMiddleware");
 
 // Non-Protected Routes
@@ -38,6 +39,7 @@ app.use(`${pathSuffix}/auth`, authRouter);
 app.use(`${pathSuffix}/user`, verifyToken, userRouter);
 app.use(`${pathSuffix}/alert`, verifyToken, alertRouter);
 app.use(`${pathSuffix}/db`, verifyToken, dbRouter);
+app.use(`${pathSuffix}/contact`, verifyToken, contactRouter);
 
 app.get("/", (req, res) => {
   res.send("Its an amazing life. Enojoy it.");
